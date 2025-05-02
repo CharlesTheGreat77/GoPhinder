@@ -1,7 +1,6 @@
 package notifier
 
 import (
-	"fmt"
 	"gophinder/utils"
 	"log"
 )
@@ -27,7 +26,7 @@ func NewNotifierService(config utils.Config) (*NotifierService, error) {
 	}
 
 	if len(notifiers) == 0 {
-		return nil, fmt.Errorf("[-] No notification service configured")
+		log.Println("[*] Warning: No notification service configured. Notifications will be disabled.")
 	}
 
 	return &NotifierService{

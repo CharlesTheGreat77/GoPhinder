@@ -25,7 +25,7 @@ Usage of ./gophinder:
 | Go           |  <=1.22 |
 
 ## Install
-```
+```bash
 git clone https://github.com/CharlesTheGreat77/GoPhinder
 cd GoPhinder
 go mod init gophinder

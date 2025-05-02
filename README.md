@@ -41,7 +41,7 @@ Usage of ./gophinder:
 Additional logging/output can be attained and pushed to stdout with ease.
 An approach can look like such:
 ```golang
-func HandleTrack() http.HandlerFunc {
+func HandleTrack(templatePath string, notifier notifier.Notifier) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data struct { // gets data form json response form webpage
       			Lat float64 `json:"lat"`

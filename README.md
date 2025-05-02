@@ -60,6 +60,10 @@ func HandleTrack() http.HandlerFunc {
 			"Longitude":   fmt.Sprintf("%.6f", data.Lon),
 			"Google Maps": fmt.Sprintf("https://maps.google.com/?q=%.6f,%.6f", data.Lat, data.Lon),
 		}
+		if notifier != nil {
+			// send to external webhooks etc.
+			go notifier.Notify("Location Log", fields)
+		}
 		logging.LogBlock("Location Log", fields) // push to the log
 		w.WriteHeader(http.StatusOK) // push 200 back to client
 	}

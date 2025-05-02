@@ -44,9 +44,9 @@ An approach can look like such:
 func HandleTrack() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data struct { // gets data form json response form webpage
-      Lat float64 `json:"lat"`
-      Lon float64 `json:"lon"`
-    }
+      			Lat float64 `json:"lat"`
+      			Lon float64 `json:"lon"`
+		}
 		if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 			log.Printf("JSON decode error: %v", err)
 			http.Error(w, "Bad Request", http.StatusBadRequest)

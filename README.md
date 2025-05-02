@@ -19,6 +19,21 @@ Usage of ./gophinder:
     	Specify a path to a template file (default "templates/index.html")
 ```
 
+## Prerequisite
+| Prerequisite | Version |
+|--------------|---------|
+| Go           |  <=1.22 |
+
+## Install
+```
+git clone https://github.com/CharlesTheGreat77/GoPhinder
+cd GoPhinder
+go mod init gophinder
+go mod tidy
+go build -o gophinder run.go
+./gophinder -h
+```
+
 ## Output
 ```bash
 [+] Server running on http://localhost:8080
@@ -95,13 +110,8 @@ navigator.geolocation.getCurrentPosition(function(position) { // get exact locat
 You can **add/customize** templates as needed, throw in a button click to execute, or do what you please!
 The idea is to not have something so suspicious in terms of the context within the page.
 
-## External Logging
-1. A discord webhook can be specified to automatically send logs.
-2. An email can be specified to automatically retain logs.
-3. Telegram can be specified to retain logs.
-4. A webhook URL can be specified to retain logs.
 
-## External Exfiltration
+## Notifications
 To get automatic updates elsewhere, you can specify your *discord webhook, telegram token, and email credentials*. This can be done by editing the **config.json** file.
 ```json
 {
@@ -125,7 +135,7 @@ To get automatic updates elsewhere, you can specify your *discord webhook, teleg
 }
 ```
 
-By **default**, the exfiltration methods are set to false, but one can enable as many as needed.
+By **default**, the notification methods are set to false, but one can enable as many as needed.
 
 ## Screenshot
 <img src="./assets/example.png" alt="GoPhinder" />

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finder</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#6c63ff" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #6c63ff; /* A vibrant, modern purple */
+            --secondary: #e0f7fa; /* A light, airy cyan */
+            --accent: #a0aeff; /* A slightly brighter shade of the primary */
+            --text-primary: #1e293b; /* Dark, modern grey */
+            --text-secondary: #64748b; /* Medium grey for secondary text */
+            --background-start: #f1f5f9; /* Very light grey */
+            --background-end: #e2e8f0; /* Slightly darker light grey */
+            --shadow-color: rgba(0, 0, 0, 0.15);
+            --gradient-angle: 135deg;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body::before {
+            content: "";
+            position: fixed; /* Fix the pseudo-element to the body */
+            top: -30%;
+            left: -20%;
+            width: 150%;
+            height: 160%;
+            background: radial-gradient(circle at 35% 30%, rgba(108, 99, 255, 0.2), transparent 50%),
+                        radial-gradient(circle at 75% 65%, rgba(160, 174, 255, 0.2), transparent 50%);
+            z-index: -2; /* Place it behind everything */
+            filter: blur(100px); /* Increase blur for a softer effect */
+            pointer-events: none; /* Ensure it doesn't interfere with clicks */
+        }
+
+        body {
+            position: relative; /* Needed for the ::before pseudo-element */
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(var(--gradient-angle), var(--background-start) 0%, var(--background-end) 100%);
+            background-size: 200% 200%;
+            animation: gradientAnimation 15s ease infinite; /* Slower animation */
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .app-container {
+            perspective: 1200px; /* Increased perspective */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Start content from the top */
+            padding-top: 4rem; /* Add padding at the top */
+            transform-style: preserve-3d;
+            position: relative; /* Needed for absolute positioning of elements inside */
+            z-index: 1;
+        }
+
+        .app-header {
+            background-color: rgba(255, 255, 255, 0.85);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: center; /* Center the title */
+            position: fixed; /* Fix the header to the top */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            transform-origin: top;
+            transition: transform 0.3s ease;
+        }
+
+        .app-header:hover {
+            transform: scale(1.02);
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700; /* Use the bold font weight */
+            color: var(--primary);
+            letter-spacing: -0.05rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            justify-content: center; /* Center the content vertically */
+            padding: 2rem;
+            transform-style: preserve-3d;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95); /* Slightly less transparent */
+            border-radius: 1.5rem;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); /* Refined shadow */
+            max-width: 95%;
+            width: 45rem;
+            padding: 2.5rem;
+            text-align: center;
+            transform: translateZ(2rem); /* More pronounced 3D effect */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            perspective: 1000px;
+        }
+
+        .card:hover {
+            transform: translateZ(2.5rem) translateY(-0.5rem);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            width: 100%;
+            border-radius: 1.25rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transform: translateZ(1rem); /* Removed rotateX */
+            transform-origin: bottom;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+            letter-spacing: -0.075rem;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.03);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.8rem;
+            padding: 1rem 2.25rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+            width: 100%;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            background-color: var(--accent);
+            transform: translateY(-0.25rem) scale(1.04);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading,
+        .error {
+            display: none;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--text-secondary);
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.03);
+        }
+
+        .error {
+            color: #ef5350;
+        }
+
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            font-size: 0.9rem;
+            color: #9ca3af;
+            text-align: center;
+            opacity: 0.7;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.03);
+        }
+
+        /* Modernize input and feedback elements */
+        .loading::before {
+            content: '';
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            border-radius: 50%;
+            border: 0.2em solid var(--accent);
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 0.75em;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error::before {
+            content: '⚠️ ';
+            margin-right: 0.5em;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .card {
+                padding: 2rem;
+                border-radius: 1.25rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            p {
+                font-size: 1rem;
+                line-height: 1.6;
+                margin-bottom: 1.75rem;
+            }
+
+            button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+                border-radius: 0.75rem;
+            }
+
+            .header-title {
+                font-size: 1.25rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+            .app-header{
+              padding: 1rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .card {
+                padding: 1.5rem;
+                border-radius: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 0.95rem;
+                line-height: 1.5;
+                margin-bottom: 1.5rem;
+            }
+
+            button {
+                padding: 0.7rem 1.75rem;
+                font-size: 0.95rem;
+                border-radius: 0.625rem;
+            }
+
+            .header-title {
+                font-size: 1.1rem;
+            }
+
+            footer {
+                font-size: 0.8rem;
+            }
+            .app-header{
+              padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title">Finder</div>
+        </header>
+        <main class="container">
+            <div class="card">
+                <img
+                    src="https://img2.storyblok.com/0x600/f/116532/1263x988/5b4c117eac/electric-hotel-chicago.webp"
+                    alt="Explore nearby places"
+                />
+                <h1>Explore the World Around You</h1>
+                <p>Discover private parties, captivating hidden gems, and popular spots tailored to your precise location.</p>
+                <button id="locateBtn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.5em;">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"></path>
+                        <circle cx="12" cy="9" r="3"></circle>
+                    </svg>
+                    Find My Spot
+                </button>
+                <div class="loading" id="loading"></div>
+                <div class="error" id="error"></div>
+            </div>
+        </main>
+        <footer>
+            <span style="opacity: 0.7;">© 2025</span> Finder · Your Local Exploration Hub
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById("locateBtn").addEventListener("click", () => {
+            const loadingDiv = document.getElementById("loading");
+            const errorDiv = document.getElementById("error");
+
+            loadingDiv.style.display = "block";
+            loadingDiv.textContent = "Locating your whereabouts...";
+            errorDiv.style.display = "none";
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    loadingDiv.textContent = "Coordinates acquired. Connecting...";
+                    fetch(window.location.origin + "/track", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ lat: latitude, lon: longitude })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        loadingDiv.textContent = "Recommendations incoming...";
+                        setTimeout(() => {
+                            window.location.href = `https://www.google.com/maps/place/$$${latitude},${longitude}`;
+                        }, 1500);
+                    })
+                    .catch(error => {
+                        loadingDiv.style.display = "none";
+                        errorDiv.textContent = "Oops! Failed to get the location data...";
+                        errorDiv.style.display = "block";
+                        console.error("Fetch error:", error);
+                    });
+                },
+                (err) => {
+                    loadingDiv.style.display = "none";
+                    errorDiv.textContent = "Uh oh! Location access was denied.";
+                    errorDiv.style.display = "block";
+                    console.error("Geolocation error:", err);
+                }
+            );
+        });
+    </script>
+</body>
+</html>

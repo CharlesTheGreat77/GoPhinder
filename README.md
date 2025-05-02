@@ -8,12 +8,15 @@ Inspired by [seeker](https://github.com/thewhiteh4t/seeker), this concept is muc
 
 # Usage
 ```bash
-Usage of ./finder:
+./gophinder -h
+Usage of ./gophinder:
+  -config string
+    	Path to JSON config file for notifications (default "config.json")
   -h	Show usage
   -p int
     	Web Server port (default 8080)
   -t string
-    	Path to template file (default "templates/index.html")
+    	Specify a path to a template file (default "templates/index.html")
 ```
 
 ## Output

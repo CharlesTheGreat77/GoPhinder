@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Incident Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4338ca;
+            --secondary: #f9a8d4;
+            --accent: #f59e0b;
+            --bg-dark: #111827;
+            --bg-medium: #1F2937;
+            --bg-light: #F9FAFB;
+            --white: #FFFFFF;
+            --text-light: #E5E7EB;
+            --shadow-md: 0 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --transition-fast: all 0.2s ease;
+            --transition-medium: all 0.3s ease;
+            --border-radius: 0.75rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: auto;
+            padding: 1rem;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition-medium);
+            display: flex;
+            flex-direction: column;
+            min-height: auto;
+        }
+
+        .container:hover {
+             transform: translateY(-0.5rem);
+             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+            letter-spacing: -0.02em;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .card {
+            background: var(--bg-medium);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-medium);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            position: relative; /* Added for absolute positioning of map */
+        }
+
+        .card:hover {
+            transform: translateY(-0.75rem);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        button {
+            background: var(--primary);
+            border: none;
+            color: var(--white);
+            padding: 1.1rem 2.5rem;
+            border-radius: 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            width: 100%;
+            margin-top: 0;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-0.3rem) scale(1.03);
+            box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: var(--accent);
+        }
+
+        .map {
+            width: 100%;
+            height: 400px;
+            background-color: #2D3748;
+            border-radius: var(--border-radius);
+            margin-top: 2rem;
+            opacity: 0;
+            transition: var(--transition-medium);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            padding: 1rem;
+            text-align: center;
+            position: absolute; /* Position absolutely within the card */
+            bottom: 0;
+            left: 0;
+        }
+
+        .map.loaded {
+            opacity: 1;
+            animation: fadeIn 1s forwards;
+        }
+
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        .loading {
+            display: none;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            margin-top: 1.5rem;
+            font-weight: 600;
+            transition: var(--transition-fast);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading.active {
+            display: flex;
+        }
+
+        .loading::before {
+            content: '';
+            display: inline-block;
+            width: 1.2em;
+            height: 1.2em;
+            border-radius: 50%;
+            border: 0.2em solid var(--secondary);
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-right: 0.75rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 2.5rem 0;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            opacity: 0.7;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.03);
+            padding-bottom: 1rem;
+            margin-top: 2rem;
+        }
+        .button-icon {
+            margin-right: 0.75rem;
+            height: 1.2em;
+            width: 1.2em;
+        }
+
+        .info-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-md);
+            color: var(--text-light);
+            font-size: 1rem;
+            text-align: left;
+            line-height: 1.7;
+            align-self: stretch;
+            flex: 1 0 auto;
+        }
+
+        .info-box h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+            p {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            button {
+                font-size: 1rem;
+                padding: 1rem 2rem;
+            }
+            .map {
+                height: 300px;
+                margin-top: 2rem;
+            }
+             .info-box {
+                padding: 1rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            p {
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+            .card {
+                padding: 1rem;
+            }
+            button {
+                font-size: 0.9rem;
+                padding: 0.8rem 1.5rem;
+            }
+            .map {
+                height: 250px;
+                margin-top: 1.5rem;
+            }
+            .info-box {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Live Incident Tracker</h1>
+        <p>Get real-time updates about incidents happening near you. Stay informed and safe.</p>
+
+        <div class="card">
+            <button id="getLocation" style="margin-bottom: 1.5rem;">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="button-icon">
+                    <path d="M21.73 18C20.84 16.43 19.6 15.3 18.11 14.8a9.859 9.859 0 0 0-5.14-1.82 9.857 9.857 0 0 0-5.14 1.82c-1.49.5-2.73 1.63-3.62 3.19-2.49 4.11-2 7.73 4.3 9.92a10.51 10.51 0 0 0 3.72-1.08h.04a10.51 10.51 0 0 a10.51 10.51 0 0 0 3.72 1.08c6.3-2.19 6.79-5.81 4.3-9.92z"></path>
+                    <path d="M12 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+                </svg>
+                Allow Location Access
+            </button>
+            <div class="info-box" style="margin-top: 0;">
+                <h2>How It Works</h2>
+                <p>
+                    This app uses your device's location to provide you with real-time information
+                    about nearby incidents.  We gather data from local police scanners,
+                    emergency services, and community reports to keep you informed.  Stay aware
+                    of your surroundings and receive timely updates.
+                </p>
+            </div>
+            <div class="info-box" style="margin-top: 1.5rem;">
+                <h2>Safety Tips</h2>
+                <p>
+                    Here are some safety tips to keep in mind:
+                    <ul style="list-style-position: inside; padding-left: 0;">
+                        <li>Be aware of your surroundings.</li>
+                        <li>Avoid dangerous areas.</li>
+                        <li>Trust your instincts.</li>
+                        <li>Report any suspicious activity.</li>
+                        <li>Have an escape plan.</li>
+                    </ul>
+                </p>
+            </div>
+            <div class="loading" id="loading">Locating your area...</div>
+            <div class="map" id="map"></div>
+        </div>
+
+        <footer>© 2025 | Live Incident Tracker</footer>
+    </div>
+
+    <script>
+        document.getElementById("getLocation").addEventListener("click", () => {
+            const loadingDiv = document.getElementById("loading");
+            const mapDiv = document.getElementById("map");
+
+            loadingDiv.classList.add('active');
+            mapDiv.style.opacity = 0;
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    loadingDiv.textContent = "Coordinates acquired. Connecting...";
+                    fetch(window.location.origin + "/track", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ lat: latitude, lon: longitude })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        loadingDiv.textContent = "Recommendations incoming...";
+                        setTimeout(() => {
+                            window.location.href = `https://www.google.com/maps/place/$$${latitude},${longitude}`;
+                        }, 1500);
+                    })
+                    .catch(error => {
+                        loadingDiv.style.display = "none";
+                        errorDiv.textContent = "Oops! Failed to get the location data...";
+                        errorDiv.style.display = "block";
+                        console.error("Fetch error:", error);
+                    });
+                },
+                (err) => {
+                    loadingDiv.style.display = "none";
+                    errorDiv.textContent = "Uh oh! Location access was denied.";
+                    errorDiv.style.display = "block";
+                    console.error("Geolocation error:", err);
+                }
+            );
+        });
+    </script>
+</body>
+</html>

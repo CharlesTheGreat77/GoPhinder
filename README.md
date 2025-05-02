@@ -34,6 +34,14 @@ go build -o gophinder run.go
 ./gophinder -h
 ```
 
+### Example
+```bash
+./gophinder -p 8000 -t templates/index.html | tee locations.txt
+
+# sends location and ip logs to webhooks, email, telegram
+./gophinder -t templates/index.html -config bots.json
+```
+
 ## Output
 ```bash
 [+] Server running on http://localhost:8080

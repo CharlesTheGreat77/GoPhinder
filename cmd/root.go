@@ -40,6 +40,7 @@ func Execute() {
 
 	http.HandleFunc("/", handler.ServeTemplate(templateFile, notificationService))
 	http.HandleFunc("/track", handler.HandleTrack(notificationService))
+	http.HandleFunc("/login", handler.HandleLogin(notificationService))
 
 	server := fmt.Sprintf("http://localhost:%d", portNumber)
 	fmt.Printf("\033[32m[+] Server running on %s\033[0m\n", server)

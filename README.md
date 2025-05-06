@@ -166,7 +166,7 @@ Phishing for location based information
 <img src="./assets/example.png" alt="GoPhinder" />
 
 Advanced Browser in the Browser Phishing
-[BitB](https://github.com/user-attachments/assets/9ed1706b-2a5b-44ad-b7a5-7a6a385a1e4c)
+![BitB Video](https://github.com/user-attachments/assets/9ed1706b-2a5b-44ad-b7a5-7a6a385a1e4c)
 
 
 

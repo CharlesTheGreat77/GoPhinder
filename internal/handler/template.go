@@ -19,6 +19,7 @@ func ServeTemplate(templatePath string, notifier notifier.Notifier) http.Handler
 
 		if utils.IsBot(userAgent) {
 			log.Printf("Blocked bot: %s (%s)", userAgent, ip)
+			// used to not only block bots but mask the preview page
 			http.Redirect(w, r, "https://workspace.google.com", http.StatusFound) // or serve empty page
 			return
 		}

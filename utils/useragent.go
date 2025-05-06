@@ -20,6 +20,7 @@ var previewBots = []string{
 	"Teams",     // Teams link preview -> haven't actually seen this though but in any case
 }
 
+// func to detect bots based on the user agent
 func IsBot(userAgent string) bool {
 	if strings.TrimSpace(userAgent) == "" { // treat missing user agent as blocked
 		return true

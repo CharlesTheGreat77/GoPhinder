@@ -162,7 +162,11 @@ To get automatic updates elsewhere, you can specify your *discord webhook, teleg
 By **default**, the notification methods are set to false, but one can enable as many as needed.
 
 ## Screenshot
+<<<<<<< Updated upstream
 Phishing for location based information
+=======
+Phishing for location based permissions
+>>>>>>> Stashed changes
 <img src="./assets/example.png" alt="GoPhinder" />
 
 Advanced Browser in the Browser Phishing
@@ -179,7 +183,11 @@ cloudflared tunnel --url http://localhost:8080
 
 # Roadmap
 1. Phishing for camera permissions
-2. Add bitb templates for windows
+2. Add more bitb templates
 
 # Contributions
 Contributions are very welcomed for additional functionality, or templates!
+
+# Disclaimer
+<img src="./assets/disclaimer.png" alt="disclaimer" />
+

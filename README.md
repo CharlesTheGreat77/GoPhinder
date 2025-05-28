@@ -162,10 +162,7 @@ To get automatic updates elsewhere, you can specify your *discord webhook, teleg
 By **default**, the notification methods are set to false, but one can enable as many as needed.
 
 ## Screenshot
-<<<<<<< Updated upstream
 Phishing for location based information
-=======
-Phishing for location based permissions
 <img src="./assets/example.png" alt="GoPhinder" />
 
 Advanced Browser in the Browser Phishing

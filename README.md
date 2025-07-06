@@ -113,6 +113,7 @@ Default templates can be found in the *templates* directory
 * Fake Emergency/Police Local Scanning Service
 * Fake Private Event Finder
 * Browser In The Browser Template(s)
+* FileFix template thanks to [mr.d0x](https://github.com/mrd0x)
 
 By Default, templates send a json response to the backend for the data to be logged
 ```javascript
